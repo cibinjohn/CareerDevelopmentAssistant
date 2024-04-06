@@ -48,8 +48,18 @@ class MongoDBHandler:
             return f"Collection '{collection_name}' already exists."
 
     def get_documents_by_key_value(self, collection_name, conditions):
+        cj_logger.info("---get_documents_by_key_value start---")
         collection = self.db[collection_name]
-        return list(collection.find(conditions))
+        values = collection.find(conditions)
+        cj_logger.info("values : ".format(values))
+        has_email = any(item.get("email") for item in values)
+        if has_email:
+            return list(collection.find(conditions))
+        else:
+            cj_logger.info("Credentials not valid")
+            cj_logger.info("conditions : {}".format(conditions))
+            cj_logger.info("Available credentials : {}".format(self.get_all_data(collection_name)))
+            return None
 
 
 class UserCredentialsHandler(MongoDBHandler):
@@ -77,6 +87,7 @@ class UserCredentialsHandler(MongoDBHandler):
     def check_credentials(self, email, password):
         # Check if the provided email and password combination exists
         filter = {"email": email, "password": password}
+        cj_logger.info("filter : {}".format(filter))
         docs = self.get_documents_by_key_value(collection_name=self.collection,
                                                conditions=filter)
         # print(docs)

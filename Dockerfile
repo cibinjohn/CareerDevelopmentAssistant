@@ -10,7 +10,7 @@ COPY src /app/src
 
 
 # Set environment variables
-ENV APP_PORT=7000
+ENV APP_PORT=6999
 ENV APP_HOST=0.0.0.0
 ENV LOGFILE="/app/src/log/log.txt"
 ENV CHROMA_PATH="/app/src/chroma"
@@ -23,4 +23,4 @@ EXPOSE 6999
 WORKDIR /app/src
 
 # CMD ["python", "wsgi.py"]
-CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:6999", "wsgi:app"]
+CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:6999", "-t", "300", "wsgi:app"]

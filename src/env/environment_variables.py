@@ -8,7 +8,7 @@ class EnvironmentVariables():
     def __init__(self):
 
         self.answer_generator_model_path = os.getenv("ANSWER_GENERATOR_MODEL_PATH","CHECKPOINTS/GPT_answer_model/v32")
-        self.addressing_generator_model_path = os.getenv("ADDRESSING_GENERATOR_MODEL_PATH","CHECKPOINTS/final_model.sav")
+        self.addressing_generator_model_path = os.getenv("ADDRESSING_GENERATOR_MODEL_PATH","CHECKPOINTS/GPT_address_model/address_model_v1")
         self.chroma_path = os.getenv("CHROMA_PATH", "chroma")
 
         self.port = os.getenv("PORT", 6999)

@@ -2,7 +2,6 @@ from datetime import datetime
 
 import pandas as pd
 from flask import Flask, request
-import uvicorn
 from flask_restful import Api, Resource
 from flask_cors import CORS
 
@@ -34,13 +33,17 @@ class Predictor(Resource):
 
     def put(self):
         input_request = request.get_json()
+        cj_logger.info("Predictor : input_request : {}".format(input_request))
         cj_logger.info('query : '.format(input_request["query"]))
         #
+        cj_logger.info("Retreiving matching docs")
         matching_docs = retriever.retrieve_top_matching_documents(input_request["query"])
-
+        cj_logger.info("Matching docs : {}".format(matching_docs))
+        # answer = "dummy_answer"
+        cj_logger.info("Generating augmented response...")
         answer = generator.predict(query=input_request["query"],
                                      matching_docs=matching_docs)
-        #
+
         results = {
             "answer": answer,
             "matching_docs": matching_docs
@@ -59,10 +62,10 @@ api.add_resource(Predictor, '/chat/response')
 
 class CredentialsValidatorConnector(Resource):
 
-    def get(self):
+    def put(self):
         input_request = request.get_json()
         # credentials = input_request["credentials"]
-
+        cj_logger.info("CredentialsValidatorConnector : input_request : {}".format(input_request))
         is_account_present = credential_handler.check_credentials(email=input_request.get('mailid'),
                                                                   password=input_request.get("password")
                                                                   )
@@ -86,6 +89,7 @@ class CredentialsCreatorConnector(Resource):
     def put(self):
         input_request = request.get_json()
         # credentials = input_request["credentials"]
+        cj_logger.info("CredentialsCreatorConnector : input_request : {}".format(input_request))
 
         status, message = credential_handler.create_user(email=input_request.get('mailid'),
                                                          password=input_request.get("password")
@@ -107,4 +111,4 @@ print(" APPCONFIG.port : ", APPCONFIG.port)
 if __name__ == "__main__":
     # app.run(debug=True, port=APPCONFIG.port, host=APPCONFIG.host)
 
-    uvicorn.run(app)
+    app.run(debug=True, port=APPCONFIG.port, host=APPCONFIG.host)
