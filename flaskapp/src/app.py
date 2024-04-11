@@ -18,7 +18,7 @@ CORS(app)
 
 api = Api(app)
 
-augmentation_model_celery_app = Celery('simple_worker',
+augmentation_model_celery_app = Celery('augmentgen_worker',
                     broker='amqp://admin:mypass@rabbit:5672',
                     backend='rpc://')
 
@@ -33,12 +33,13 @@ class Predictor(Resource):
     def put(self):
         input_request = request.get_json()
         cj_logger.info("Predictor : input_request : {}".format(input_request))
-        cj_logger.info('query : '.format(input_request["query"]))
+        query = input_request['query']
+        mailid = input_request['mailid']
+        cj_logger.info('query : '.format(query))
 
         # Print the list of registered tasks
         cj_logger.info("Registered tasks:")
-        query = input_request['query']
-        mailid = input_request['mailid']
+
 
         # answer = generator.get_addressing_statement(query=input_request["query"])
         # answer = augmentation_model_celery_app.send_task('tasks.longtime_add', kwargs={'x': 1, 'y': 2})

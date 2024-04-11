@@ -5,10 +5,10 @@ COPY requirements.txt /
 RUN pip install -r /requirements.txt
 
 #COPY app.py /app.py
-ADD . /simple_worker
-COPY src /simple_worker/src
+ADD . /augmentgen_worker
+COPY src /augmentgen_worker/src
 
-WORKDIR /simple_worker/src
+WORKDIR /augmentgen_worker/src
 
 ENTRYPOINT celery -A tasks worker --concurrency=1 --loglevel=info
 #-Q celery_worker

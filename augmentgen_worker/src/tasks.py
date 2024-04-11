@@ -19,7 +19,9 @@ def longtime_add(x, y):
 @app.task()
 def get_augmentated_response(query, mailid):
     cj_logger.info('get_augmentated_response Got Request - Starting work ')
+    cj_logger.info("query : {}. mailid : {}".format(query,mailid))
     # time.sleep(4)
     result = "dummy augmented answer"
+    cj_logger.info("result : {}".format(result))
     cj_logger.info('get_augmentated_response Work Finished ')
     return result
