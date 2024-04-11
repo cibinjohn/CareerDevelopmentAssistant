@@ -2,7 +2,7 @@ import time
 from celery import Celery
 from celery.utils.log import get_task_logger
 
-logger = get_task_logger(__name__)
+from log.cj_logger import cj_logger
 
 app = Celery('tasks',
              broker='amqp://admin:mypass@rabbit:5672',
@@ -11,7 +11,15 @@ app = Celery('tasks',
 
 @app.task()
 def longtime_add(x, y):
-    logger.info('Got Request - Starting work ')
+    cj_logger.info('longtime_add Got Request - Starting work ')
     # time.sleep(4)
-    logger.info('Work Finished ')
+    cj_logger.info(' longtime_add Work Finished ')
     return x + y
+
+@app.task()
+def get_augmentated_response(query, mailid):
+    cj_logger.info('get_augmentated_response Got Request - Starting work ')
+    # time.sleep(4)
+    result = "dummy augmented answer"
+    cj_logger.info('get_augmentated_response Work Finished ')
+    return result

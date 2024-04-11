@@ -18,14 +18,14 @@ CORS(app)
 
 api = Api(app)
 
-simple_app = Celery('simple_worker',
+augmentation_model_celery_app = Celery('simple_worker',
                     broker='amqp://admin:mypass@rabbit:5672',
                     backend='rpc://')
 
 # Print the list of registered tasks
-# cj_logger.info("Registered tasks:")
-# for task_name, task_func in augmentation_model_celery_app.tasks.items():
-#     cj_logger.info(f"Task Name: {task_name}, Task Function: {task_func}")
+cj_logger.info("Registered tasks:")
+for task_name, task_func in augmentation_model_celery_app.tasks.items():
+    cj_logger.info(f"Task Name: {task_name}, Task Function: {task_func}")
 class Predictor(Resource):
     def get(self):
         return {'message': "Endpoint working successfully..."}
@@ -37,9 +37,13 @@ class Predictor(Resource):
 
         # Print the list of registered tasks
         cj_logger.info("Registered tasks:")
+        query = input_request['query']
+        mailid = input_request['mailid']
 
         # answer = generator.get_addressing_statement(query=input_request["query"])
-        answer = simple_app.send_task('tasks.longtime_add', kwargs={'x': 1, 'y': 2})
+        # answer = augmentation_model_celery_app.send_task('tasks.longtime_add', kwargs={'x': 1, 'y': 2})
+        answer = augmentation_model_celery_app.send_task('tasks.get_augmentated_response', kwargs={'query': query,
+                                                                                                   'mailid': mailid})
         task_id = answer.id
         results = answer.get()
         # cj_logger.info('results : '.format(results))
