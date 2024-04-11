@@ -18,9 +18,24 @@ services:
       - "15672:15672"
       - "5672:5672"
 
+  mongodb:
+    image: "mongodb/mongodb-community-server:latest"
+    ports:
+      - "27017:27017"
+
+    depends_on:
+      - rag_api
+
   augmentgen_worker:
     image: 'careerdevelopmentchatbot_augmentationmodel_worker:release_v4'
 #    user: nobody
     depends_on:
       - rabbit
       - flask_app
+
+  rag_api:
+    image: 'careerdevelopmentchatbot_rag:release_v4'
+    ports:
+      - "6997:6997"
+    depends_on:
+      - augmentgen_worker
