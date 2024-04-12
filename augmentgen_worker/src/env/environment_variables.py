@@ -5,9 +5,11 @@ import os
 class EnvironmentVariables():
 
     def __init__(self):
-        self.augmentation_model_api_port = os.getenv("AUGMENTATION_MODEL_API_PORT", 6997)
-        self.augmentation_model_api_host = os.getenv("AUGMENTATION_MODEL_API_HOST", "rag_api")
-        self.logfile = os.getenv("LOGFILE", "log/log.txt")
+
+        self.port = os.getenv("PORT", 7006)
+        self.host = os.getenv("HOST", "0.0.0.0")
+        self.logfile = os.getenv("LOGFILE", "log.txt")
+
 
 
 APPCONFIG = EnvironmentVariables()

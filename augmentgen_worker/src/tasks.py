@@ -1,7 +1,7 @@
 import time
 from celery import Celery
 from celery.utils.log import get_task_logger
-from utils import call_augmentation_model_api
+
 from log.cj_logger import cj_logger
 
 app = Celery('tasks',
@@ -21,8 +21,7 @@ def get_augmentated_response(query, mailid):
     cj_logger.info('get_augmentated_response Got Request - Starting work ')
     cj_logger.info("query : {}. mailid : {}".format(query,mailid))
     # time.sleep(4)
-    # result = "dummy augmented answer"
-    response = call_augmentation_model_api(query, mailid)
-    cj_logger.info("result : {}".format(response))
+    result = "dummy augmented answer"
+    cj_logger.info("result : {}".format(result))
     cj_logger.info('get_augmentated_response Work Finished ')
-    return response
+    return result
