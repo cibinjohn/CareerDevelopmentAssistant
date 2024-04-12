@@ -35,7 +35,7 @@ class Predictor(Resource):
         cj_logger.info("Predictor : input_request : {}".format(input_request))
         query = input_request['query']
         mailid = input_request['mailid']
-        cj_logger.info('query : '.format(query))
+        cj_logger.info('query : {}'.format(query))
 
         # Print the list of registered tasks
         cj_logger.info("Registered tasks:")
@@ -47,14 +47,29 @@ class Predictor(Resource):
                                                                                                    'mailid': mailid})
         task_id = answer.id
         results = answer.get()
-        cj_logger.info('results : '.format(results))
+        cj_logger.info('results : {}'.format(results))
         #
-        results = results
+        is_augmented = results['is_augmented']
+        cj_logger.info("is_augmented original: {}".format(is_augmented))
 
-        # results = {
-        #     "answer": answer,
-        # }
-        cj_logger.info('results : '.format(results))
+        is_augmented = False
+        cj_logger.info("is_augmented : {}".format(is_augmented))
+
+        matching_docs = results['matching_docs']
+
+
+        if not is_augmented:
+            cj_logger.info("Calling addressing model")
+
+            addressing_statement_resp = augmentation_model_celery_app.send_task('tasks.get_addressing_statement', kwargs={'query': query}).get()
+
+            cj_logger.info("addressing_statement : {}".format(addressing_statement_resp))
+
+            addressing_statement = addressing_statement_resp['answer']
+
+            answer = addressing_statement + "\n" + matching_docs[0]
+
+            results['answer'] = answer
 
         return {
                 'results': results,

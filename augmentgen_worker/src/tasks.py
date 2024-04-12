@@ -26,3 +26,15 @@ def get_augmentated_response(query, mailid):
     cj_logger.info("result : {}".format(response))
     cj_logger.info('get_augmentated_response Work Finished ')
     return response
+
+@app.task()
+def get_addressing_statement(query):
+    cj_logger.info('get_addressing_statement Got Request - Starting work ')
+    cj_logger.info("query : {}".format(query))
+    # time.sleep(4)
+    # result = "dummy augmented answer"
+    response = {"answer":"dummy augmented answer"}
+    # response = call_augmentation_model_api(query, mailid)
+    cj_logger.info("result : {}".format(response))
+    cj_logger.info('get_addressing_statement Work Finished ')
+    return response
