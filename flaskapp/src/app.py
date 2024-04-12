@@ -47,9 +47,9 @@ class Predictor(Resource):
                                                                                                    'mailid': mailid})
         task_id = answer.id
         results = answer.get()
-        # cj_logger.info('results : '.format(results))
+        cj_logger.info('results : '.format(results))
         #
-        # results = results['results']
+        results = results
 
         # results = {
         #     "answer": answer,
