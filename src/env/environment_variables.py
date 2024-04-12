@@ -8,8 +8,8 @@ class EnvironmentVariables():
     def __init__(self):
 
         self.answer_generator_model_path = os.getenv("ANSWER_GENERATOR_MODEL_PATH","CHECKPOINTS/GPT_answer_model/v32")
-        self.addressing_generator_model_path = os.getenv("ADDRESSING_GENERATOR_MODEL_PATH","CHECKPOINTS/GPT_address_model/address_model_v1")
         self.chroma_path = os.getenv("CHROMA_PATH", "chroma")
+
 
         self.port = os.getenv("PORT", 6999)
         self.host = os.getenv("HOST", "0.0.0.0")
@@ -18,6 +18,10 @@ class EnvironmentVariables():
         self.mongodb_port = os.getenv("MONGODB_PORT", 27017)
         self.mongodb_host= os.getenv("MONGODB_HOST", "localhost")
         self.mongodb_name= os.getenv("MONGODB_NAME", "careerdevelopment_db")
+
+        self.address_model_port = os.getenv("ADDRESS_MODEL_PORT", 6998)
+        self.address_model_host= os.getenv("ADDRESS_MODEL_HOST", "localhost")
+
 
 
 

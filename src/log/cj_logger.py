@@ -7,7 +7,7 @@ cj_logger.setLevel(logging.DEBUG)
 cj_formatter = logging.Formatter('%(asctime)s : %(name)s : %(levelname)s : %(message)s')
 
 #file handler
-file_handler = logging.FileHandler(filename="cj_log.txt")
+file_handler = logging.FileHandler(filename="log/cj_log.txt")
 file_handler.setFormatter(cj_formatter)
 
 # std out

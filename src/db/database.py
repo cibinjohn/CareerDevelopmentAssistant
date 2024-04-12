@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+
+import pandas as pd
 from pymongo import MongoClient
 
 from log.cj_logger import cj_logger
@@ -99,8 +102,86 @@ class UserCredentialsHandler(MongoDBHandler):
     def retrieve_all_credentials(self):
         return self.get_all_data(self.collection)
 
+class UserConversationHandler(MongoDBHandler):
+    def __init__(self, host='localhost', port=27017, db_name='test', collection_name='conversations'):
+        super().__init__(host, port, db_name)
+
+        self.collection = collection_name
+
+        if self.collection not in self.list_collections():
+            cj_logger.info("Collection {} does not exist, Creating it...".format(self.collection))
+            self.create_collection(self.collection)
+
+    def add_conversation(self, email, statement, statement_type="other"):
+
+        conversation_dict = {
+            "email":email,
+            "statement":statement,
+            "type":statement_type,
+            "timestamp":datetime.now()
+        }
+        cj_logger.info("Adding conversation record to the database, conversation_dict: {}".format(conversation_dict))
+        self.add_data(collection_name=self.collection,
+                      data=conversation_dict)
+        cj_logger.info("conversation data added...")
+
+    def retrieve_all(self):
+        return self.get_all_data(self.collection)
+
+    def retrieve_recent_conversations_by_user(self, email, window=5):
+
+        start_time = datetime.now() - timedelta(minutes=window)
+
+        # Define the query to filter records by email and within the time window
+        conditions = {"email": email, "timestamp": {"$gte": start_time}}
+
+        # Retrieve conversation records matching the query
+        cursor = self.get_documents_by_key_value(collection_name=self.collection,
+                                                 conditions=conditions)
+
+        if not cursor:
+            cj_logger.info("No recent conversations...")
+            return []
+        # Convert the cursor to a list of dictionaries
+        records = list(cursor)
+
+        df = pd.DataFrame(records)
+
+        # Sort the DataFrame by timestamp in ascending order
+        df.sort_values(by='timestamp', ascending=True, inplace=True)
+
+        queries_list = df.statement[df['type']=='query'].tolist()
+        return queries_list
+
+
+
 
 if __name__ == "__main__":
+
+    email = "cibin@gmail.com"
+    #
+    statement = "query2"
+    statement_type = "query"
+
+    # statement = "response1"
+    # statement_type = "response"
+
+
+    conv_handler = UserConversationHandler(collection_name="userconversations")
+
+    # conv_handler.add_conversaton(email=email,
+    #                              statement=statement,
+    #                              statement_type=statement_type)
+
+    print(" conv_handler.retrieve_all() : ",conv_handler.retrieve_all())
+
+    recent_queries = conv_handler.retrieve_recent_conversations_by_user(email=email,
+                                                       window=60)
+
+    print("recent_queries : ",recent_queries)
+    # print("recent_conversations columns : ",recent_conversations.columns)
+
+
     # Connect to MongoDB
     # mongo_handler = MongoDBHandler()
     #
@@ -119,32 +200,32 @@ if __name__ == "__main__":
     # print("List collection : ",mongo_handler.list_collections())
 
     # CREDENTIALS COLLECTION
-    credential_handler = UserCredentialsHandler()
-
-    # retrieve documents
-    print('credentials data : ',credential_handler.retrieve_all_credentials())
-
-    # creating document
-    mail_id = "cibin@gmail.com"
-    password = "pass"
-
-    message = credential_handler.create_user(mail_id, password)
-
-    print("message : ",message)
-    print('credentials data : ', credential_handler.retrieve_all_credentials())
-
-    # retrieve document
-
-    credentials = credential_handler.retrieve_all_credentials()
-    print("credentials : ",credentials)
-
-    # CHeck credentials
-
-    is_valid = credential_handler.check_credentials(email="cibin@gmail.com",
-                                                    password="pass")
-    print("is_valid : ",is_valid)
-
-    is_valid = credential_handler.check_credentials(email="cibin@gmail.com",
-                                                    password="pass2")
-    print("is_valid : ", is_valid)
-
+    # credential_handler = UserCredentialsHandler()
+    #
+    # # retrieve documents
+    # print('credentials data : ',credential_handler.retrieve_all_credentials())
+    #
+    # # creating document
+    # mail_id = "cibin@gmail.com"
+    # password = "pass"
+    #
+    # message = credential_handler.create_user(mail_id, password)
+    #
+    # print("message : ",message)
+    # print('credentials data : ', credential_handler.retrieve_all_credentials())
+    #
+    # # retrieve document
+    #
+    # credentials = credential_handler.retrieve_all_credentials()
+    # print("credentials : ",credentials)
+    #
+    # # CHeck credentials
+    #
+    # is_valid = credential_handler.check_credentials(email="cibin@gmail.com",
+    #                                                 password="pass")
+    # print("is_valid : ",is_valid)
+    #
+    # is_valid = credential_handler.check_credentials(email="cibin@gmail.com",
+    #                                                 password="pass2")
+    # print("is_valid : ", is_valid)
+    #

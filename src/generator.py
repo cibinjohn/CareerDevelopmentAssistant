@@ -1,8 +1,9 @@
 import torch.cuda
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
-import time
+
 from env.environment_variables import APPCONFIG
 from log.cj_logger import cj_logger
+
 
 
 class AugmentedGenerator:
@@ -28,10 +29,6 @@ class AugmentedGenerator:
         self.load_rag_model()
         cj_logger.info("Loaded answer model successfully...")
 
-        #
-        # cj_logger.info("Loading addressing model...")
-        # self.load_addressing_model()
-        # cj_logger.info("Loaded addressing model successfully...")
 
     def load_tokenizer(self):
         self.tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
@@ -39,10 +36,6 @@ class AugmentedGenerator:
 
     def load_rag_model(self):
         self.answer_model = GPT2LMHeadModel.from_pretrained(APPCONFIG.answer_generator_model_path).to(self.device)
-
-    def load_addressing_model(self):
-        self.address_model = GPT2LMHeadModel.from_pretrained(APPCONFIG.addressing_generator_model_path).to(self.device)
-
     @staticmethod
     def preprocess(arg):
         is_present = "<SOS>" in arg and "<EOS>" in arg
@@ -52,37 +45,17 @@ class AugmentedGenerator:
 
         return is_present, arg
 
-    def get_addressing_statement(self, query):
-        cj_logger.info("Addressing model start")
-        cj_logger.info("query : ",query)
-        input_ids = self.tokenizer.encode(query, return_tensors='pt').to(self.device)
 
-        # Generate the output sequence
-        output = self.address_model.generate(input_ids,
-                                            max_length=1000,
-                                            num_return_sequences=1,
-                                            pad_token_id=self.tokenizer.eos_token_id)
-
-        # Decode the generated output
-        decoded_output = self.tokenizer.decode(output[0], skip_special_tokens=True)
-
-        is_present, addressing_statement = self.preprocess(decoded_output)
-
-        if not is_present:
-            cj_logger.info("Using static addressing statement")
-            cj_logger.info("decoded_output : {}".format(decoded_output))
-            addressing_statement = "Here is the answer to what you have asked."
-
-        return addressing_statement
 
     def predict(self, query, matching_docs):
 
         context = "\n\n".join(matching_docs[0:3])
-        query = "context: " + context + "\nquestion: " + query + "\nAnswer the question based on the provided context"
+        query_updated = "context: " + context + "\nquestion: " + query + "\nAnswer the question based on the provided context"
 
         cj_logger.info("query : {}".format(query))
+        cj_logger.info("query_updated : {}".format(query_updated))
 
-        input_ids = self.tokenizer.encode(query, return_tensors='pt').to(self.device)
+        input_ids = self.tokenizer.encode(query_updated, return_tensors='pt').to(self.device)
 
         # Generate the output sequence
         output = self.answer_model.generate(input_ids,
@@ -94,15 +67,94 @@ class AugmentedGenerator:
         decoded_output = self.tokenizer.decode(output[0], skip_special_tokens=True)
 
         is_present, processed_output = self.preprocess(decoded_output)
+        is_present = False
 
-        # is_present = False
         # if not is_present:
         #     cj_logger.info("Using the addressing model")
-        #     addressing_statement = self.get_addressing_statement(query)
+        #     # addressing_statement = get_addressing_statement(query)
+        #
+        #
+        #     address_model_response = address_model_celery_app.send_task('tasks.get_addressing_statement',
+        #                                                  kwargs={
+        #                                                      'query':query
+        #                                                         }).get()
+        #     cj_logger.info("address_model_response : {}".format(address_model_response))
+        #     #
+        #     addressing_statement = address_model_response['results']['answer']
+        #     #
+        #     # addressing_statement = "Dummy addressing statement"
         #     cj_logger.info("addressing_statement : {}".format(addressing_statement))
         #     processed_output = addressing_statement + "\n" + matching_docs[0]
 
-        return processed_output
+        cj_logger.info("processed_output : {}".format(processed_output))
+        return processed_output, is_present
+
+#
+# class QuestionAddressingGenerator:
+#     def __init__(self, device="cpu"):
+#
+#
+#         if not device:
+#             self.device = "cuda" if torch.cuda.is_available() else "cpu"
+#         else:
+#             self.device = "cpu"
+#
+#         cj_logger.info("self.device : {}".format(self.device))
+#         self.load_models()
+#
+#
+#     def load_tokenizer(self):
+#         self.tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+#         self.tokenizer.pad_token = self.tokenizer.eos_token
+#
+#     def load_addressing_model(self):
+#         self.address_model = GPT2LMHeadModel.from_pretrained(APPCONFIG.addressing_generator_model_path).to(self.device)
+#
+#
+#     def load_models(self):
+#
+#         cj_logger.info("Loading tokenizer...")
+#         self.load_tokenizer()
+#         cj_logger.info("Loaded tokenizer successfully...")
+#
+#         cj_logger.info("Loading addressing model...")
+#         self.load_addressing_model()
+#
+#
+#         cj_logger.info("Loaded addressing model successfully...")
+#
+#     def get_addressing_statement(self, query):
+#         cj_logger.info("Addressing model start")
+#         cj_logger.info("query : {}".format(query))
+#         input_ids = self.tokenizer.encode(query, return_tensors='pt').to(self.device)
+#
+#         # Generate the output sequence
+#         output = self.address_model.generate(input_ids,
+#                                             max_length=1000,
+#                                             num_return_sequences=1,
+#                                             pad_token_id=self.tokenizer.eos_token_id)
+#
+#         # Decode the generated output
+#         decoded_output = self.tokenizer.decode(output[0], skip_special_tokens=True)
+#
+#         is_present, addressing_statement = self.preprocess(decoded_output)
+#
+#         if not is_present:
+#             cj_logger.info("Using static addressing statement")
+#             cj_logger.info("decoded_output : {}".format(decoded_output))
+#             addressing_statement = "Here is the answer to what you have asked."
+#
+#         return addressing_statement
+#
+#     @staticmethod
+#     def preprocess(arg):
+#         is_present = "<SOS>" in arg and "<EOS>" in arg
+#
+#         if is_present:
+#             arg = arg.split("<SOS>")[-1].split("<EOS>")[0]
+#
+#         return is_present, arg
+#
 
 
 if __name__ == "__main__":
@@ -116,6 +168,12 @@ if __name__ == "__main__":
     ]
 
     generator = AugmentedGenerator()
+    # addressor = QuestionAddressingGenerator(device="cuda")
+
+    # query = "What do I need to learn to become full stack engineer"
+
+    # response = addressor.get_addressing_statement(query=query)
+
 
     response = generator.predict(query=query,
                                  matching_docs=matching_docs)
