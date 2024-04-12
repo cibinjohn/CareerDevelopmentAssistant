@@ -54,3 +54,11 @@ services:
       - "6996:6996"
     depends_on:
       - augmentgen_worker
+
+  frontend:
+    image: 'careerdevelopmentchatbot_ui:release_v4'
+    ports:
+      - "3000:3000"
+    depends_on:
+      - flask_app
+
