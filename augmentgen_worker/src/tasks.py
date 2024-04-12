@@ -38,3 +38,51 @@ def get_addressing_statement(query):
     # response = response['results']
     cj_logger.info('get_addressing_statement Work Finished ')
     return response
+
+@app.task()
+def create_credentials(name, mailid, password):
+    cj_logger.info('create_credentials Got Request - Starting work ')
+    cj_logger.info("name :{}, mailid : {}".format(name, mailid))
+    # time.sleep(4)
+    # result = "dummy augmented answer"
+    # response = {"answer":"dummy augmented answer"}
+    # response = call_address_model_api(query)
+    response = {
+    "code": 200,
+    "status": "success",
+    "message": "account created"}
+
+
+    cj_logger.info("response : {}".format(response))
+
+    status = response['status']
+    message = response['message']
+    # response = response['results']
+
+    cj_logger.info("status : {}, message : {}".format(status, message))
+    cj_logger.info('create_credentials Work Finished ')
+    return status, message
+
+@app.task()
+def validate_credentials(mailid, password):
+    cj_logger.info('validate_credentials Got Request - Starting work ')
+    cj_logger.info("name :{}, mailid : {}".format(mailid, password))
+    # time.sleep(4)
+    # result = "dummy augmented answer"
+    # response = {"answer":"dummy augmented answer"}
+    # response = call_address_model_api(query)
+    response = {
+    "results": {
+        "credentials": {
+            "mailid": "user1@gmail.com",
+            "password": "pass1"
+        },
+        "is_account_present": "False"
+    },
+    "code": 200,
+    "message": "Credentials validated successfully"
+    }
+    cj_logger.info("response : {}".format(response))
+    # response = response['results']
+    cj_logger.info('validate_credentials Work Finished ')
+    return response['results']['is_account_present']

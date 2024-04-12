@@ -25,6 +25,7 @@ services:
 
     depends_on:
       - rag_api
+      - usercred_api
 
   augmentgen_worker:
     image: 'careerdevelopmentchatbot_augmentationmodel_worker:release_v4'
@@ -44,5 +45,12 @@ services:
     image: 'careerdevelopmentchatbot_addressing_api:release_v4'
     ports:
       - "6998:6998"
+    depends_on:
+      - augmentgen_worker
+
+  usercred_api:
+    image: 'careerdevelopmentchatbot_usercredapi:release_v4'
+    ports:
+      - "6996:6996"
     depends_on:
       - augmentgen_worker
