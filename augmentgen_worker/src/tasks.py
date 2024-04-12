@@ -17,14 +17,25 @@ def longtime_add(x, y):
     return x + y
 
 @app.task()
-def get_augmentated_response(query, mailid):
-    cj_logger.info('get_augmentated_response Got Request - Starting work ')
+def get_premium_augmentated_response(query, mailid):
+    cj_logger.info('get_premium_augmentated_response Got Request - Starting work ')
     cj_logger.info("query : {}. mailid : {}".format(query,mailid))
     # time.sleep(4)
     # result = "dummy augmented answer"
     response = call_augmentation_model_api(query, mailid)
     cj_logger.info("result : {}".format(response))
-    cj_logger.info('get_augmentated_response Work Finished ')
+    cj_logger.info('get_premium_augmentated_response Work Finished ')
+    return response
+
+@app.task()
+def get_scratch_augmentated_response(query, mailid):
+    cj_logger.info('get_scratch_augmentated_response Got Request - Starting work ')
+    cj_logger.info("query : {}. mailid : {}".format(query,mailid))
+    # time.sleep(4)
+    # result = "dummy augmented answer"
+    response = call_augmentation_model_api(query, mailid)
+    cj_logger.info("result : {}".format(response))
+    cj_logger.info('get_scratch_augmentated_response Work Finished ')
     return response
 
 @app.task()

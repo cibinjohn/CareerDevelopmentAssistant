@@ -4,7 +4,7 @@ services:
   flask_app:
     image: 'careerdevelopmentchatbot:release_v4'
     ports:
-      - "7006:7006"
+      - "6999:6999"
     depends_on:
       - rabbit
 

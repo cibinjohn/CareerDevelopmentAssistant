@@ -14,7 +14,7 @@ ENV FLASK_ENV=development
 
 EXPOSE 7006
 
-CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:7006", "-t", "6000", "app:app"]
+CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:6999", "-t", "6000", "app:app"]
 # CMD flask run --host=0.0.0.0
 
 #CMD gunicorn --workers $WORKERS \
