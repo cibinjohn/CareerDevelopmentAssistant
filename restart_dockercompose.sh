@@ -11,8 +11,8 @@ working_dir=/home/cibin/Desktop/lambton/TERM3/capstone/pipeline/RAG/release_v4/C
 cd $working_dir/flaskapp
 sudo docker build -t careerdevelopmentchatbot:release_v4 .
 
-#cd $working_dir/augmentgen_worker
-#sudo docker build -t careerdevelopmentchatbot_augmentationmodel_worker:release_v4 .
+cd $working_dir/augmentgen_worker
+sudo docker build -t careerdevelopmentchatbot_augmentationmodel_worker:release_v4 .
 
 ###################################################
 #echo "building addressmodel_worker"
