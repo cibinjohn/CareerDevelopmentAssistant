@@ -1,8 +1,7 @@
-import time
 from celery import Celery
-from celery.utils.log import get_task_logger
-from utils import call_augmentation_model_api
+
 from log.cj_logger import cj_logger
+from utils import call_augmentation_model_api, call_address_model_api
 
 app = Celery('tasks',
              broker='amqp://admin:mypass@rabbit:5672',
@@ -33,8 +32,9 @@ def get_addressing_statement(query):
     cj_logger.info("query : {}".format(query))
     # time.sleep(4)
     # result = "dummy augmented answer"
-    response = {"answer":"dummy augmented answer"}
-    # response = call_augmentation_model_api(query, mailid)
-    cj_logger.info("result : {}".format(response))
+    # response = {"answer":"dummy augmented answer"}
+    response = call_address_model_api(query)
+    cj_logger.info("response : {}".format(response))
+    # response = response['results']
     cj_logger.info('get_addressing_statement Work Finished ')
     return response

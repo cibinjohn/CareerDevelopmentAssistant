@@ -39,3 +39,10 @@ services:
       - "6997:6997"
     depends_on:
       - augmentgen_worker
+
+  addressmodel_api:
+    image: 'careerdevelopmentchatbot_addressing_api:release_v4'
+    ports:
+      - "6998:6998"
+    depends_on:
+      - augmentgen_worker
