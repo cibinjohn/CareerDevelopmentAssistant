@@ -1,7 +1,8 @@
 from celery import Celery
 
 from log.cj_logger import cj_logger
-from utils import call_augmentation_model_api, call_address_model_api
+from utils import call_augmentation_model_api, call_address_model_api, call_create_credentials_api, \
+    call_validate_credentials_api
 
 app = Celery('tasks',
              broker='amqp://admin:mypass@rabbit:5672',
@@ -47,10 +48,13 @@ def create_credentials(name, mailid, password):
     # result = "dummy augmented answer"
     # response = {"answer":"dummy augmented answer"}
     # response = call_address_model_api(query)
-    response = {
-    "code": 200,
-    "status": "success",
-    "message": "account created"}
+    response = call_create_credentials_api(name,
+                                           mailid,
+                                           password)
+    # response = {
+    # "code": 200,
+    # "status": "success",
+    # "message": "account created"}
 
 
     cj_logger.info("response : {}".format(response))
@@ -71,17 +75,20 @@ def validate_credentials(mailid, password):
     # result = "dummy augmented answer"
     # response = {"answer":"dummy augmented answer"}
     # response = call_address_model_api(query)
-    response = {
-    "results": {
-        "credentials": {
-            "mailid": "user1@gmail.com",
-            "password": "pass1"
-        },
-        "is_account_present": "False"
-    },
-    "code": 200,
-    "message": "Credentials validated successfully"
-    }
+
+    response = call_validate_credentials_api(mailid, password)
+
+    # response = {
+    # "results": {
+    #     "credentials": {
+    #         "mailid": "user1@gmail.com",
+    #         "password": "pass1"
+    #     },
+    #     "is_account_present": "False"
+    # },
+    # "code": 200,
+    # "message": "Credentials validated successfully"
+    # }
     cj_logger.info("response : {}".format(response))
     # response = response['results']
     cj_logger.info('validate_credentials Work Finished ')

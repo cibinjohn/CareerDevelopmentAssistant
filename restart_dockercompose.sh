@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Add credentials endpoints to flaskapp with dummy response from the worker
+# Replace dummy response with original responses
 
 
 sudo docker-compose down
@@ -8,14 +9,14 @@ sudo docker-compose down
 working_dir=/home/cibin/Desktop/lambton/TERM3/capstone/pipeline/RAG/release_v4/CareerDevelopmentAssistant
 #rag_dir=/home/cibin/Desktop/lambton/TERM3/capstone/pipeline/RAG/CareerDevelopmentAssistant
 ##
-cd $working_dir/flaskapp
-sudo docker build -t careerdevelopmentchatbot:release_v4 .
+#cd $working_dir/flaskapp
+#sudo docker build -t careerdevelopmentchatbot:release_v4 .
 
 #cd $working_dir/usercred_api
 #sudo docker build -t careerdevelopmentchatbot_usercredapi:release_v4 .
 #
-#cd $working_dir/augmentgen_worker
-#sudo docker build -t careerdevelopmentchatbot_augmentationmodel_worker:release_v4 .
+cd $working_dir/augmentgen_worker
+sudo docker build -t careerdevelopmentchatbot_augmentationmodel_worker:release_v4 .
 
 #cd $working_dir/addressing_api
 #sudo docker build -t careerdevelopmentchatbot_addressing_api:release_v4 .
