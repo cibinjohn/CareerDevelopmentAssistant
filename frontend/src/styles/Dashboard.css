@@ -1,0 +1,378 @@
+.dashboard-main{
+    font-size: 30px;
+    height: 100vh;
+    width: 100%;
+
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    flex-direction: column;
+}
+
+.dashboard-main p{
+  font-size: 20px;
+  padding: 0 20px
+}
+
+.logout-button{
+    background: black;
+    color: white;
+    border: 3px solid black;
+    transition: background 1s linear 0ms;
+    transition: color 500ms linear 0ms;
+
+    width: 500px;
+    padding: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    border-radius: 30px;
+    font-weight: 600;
+    margin-top: 10px;
+
+    font-size: 20px;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  
+  .logout-button:hover{
+    color: #333;
+    background-color: white;
+  }
+  .img-gallary{
+    height: 100%;
+    width: 24%;
+    margin: 0.5%;
+    border-radius: 3%;
+  }
+  .img-hover {
+    padding: 3vw;
+    transition: transform .2s; /* Animation */
+    width: 33%;
+    height: 32vw;
+    border-radius: 6%;
+    cursor: pointer;
+    margin-top: -1% !important;
+  }
+  
+  .img-hover:hover {
+    opacity: 80%;
+    transform: scale(1.05); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+  }
+
+  /***** Global Style *****/
+*{
+  font-family: Play;
+}
+p{
+  font-size: 20px;
+  color: #444;
+}
+
+/***** Global Slide *****/
+.slide-right, .slide-left {
+  width: 100%;
+}
+
+/***** Slide Right *****/
+.slide-right {
+  animation: 3s slide-right;
+}
+@keyframes slide-right {
+  from {
+    margin-left: -100%;
+  }
+  to {
+    margin-left: 0%;
+  }
+}
+
+/***** Slide Left *****/
+.slide-left {
+  animation: 3s slide-left;
+}
+@keyframes slide-left {
+  from {
+    margin-left: 100%;
+  }
+  to {
+    margin-left: 0%;
+  }
+}
+
+
+.advertise1{
+  width: 100%;
+  height: 37vw;
+  position: relative;
+  /* color: linear-gradient(90deg, #0b3e27, #197149); */
+}
+.addtext1 {
+  font-size: 7vw !important;
+  background: -webkit-linear-gradient(left,#d19404, #e0d14a); 
+  -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+  font-family: fantasy;
+}
+
+.addtext2 {
+  font-size: 7vw !important;
+  color: white;
+  font-family: fantasy;
+}
+
+.shadowDiv1{
+  background-color: white;
+  height: 15vw;
+  color:linear-gradient(90deg, #0b3e27, #197149);
+  text-align: center;
+}
+
+.shadowDiv2{
+  height: 25vw;
+  background: linear-gradient(90deg, #0b3e27, #197149);
+  margin-top: -0.6%;
+}
+.white-text{
+  color: white;
+}
+.ad1Text1{
+  float: left;
+    margin-top: 2%;
+    margin-left: 2%;
+    font-family: cursive;
+}
+.ad1Text2{
+  float: left;
+    margin-top: 2%;
+    margin-left: 2%;
+    font-family: cursive;
+
+}
+.ad1Text3{
+  float: left;
+}
+.shadowDivChild{
+  margin-bottom: 1px;
+}
+.upper-font{
+  text-transform: uppercase;
+}
+.galleryDiv{
+  margin-top: 3%;
+}
+.subAd1{
+  width: 70%;
+}
+.subAd2{
+  width: 30%;
+  float:right;
+}
+.add1Image{
+  height: 50%;
+  width: 50%;
+  float: right;
+  margin-top: -60%;
+}
+
+.hoverDiv{
+  margin-top: 1%;
+  height: 35v;
+  background: linear-gradient(90deg, #0b3e27, #197149);
+}
+
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f6f7fb;
+  transition: background-color 0.3s ease;
+}
+#chat-container {
+  max-width: 800px;
+  margin: 130px auto;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+}
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  transition: color 0.3s ease;
+}
+#output {
+  height: 300px;
+  overflow-y: auto;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  margin-bottom: 20px;
+}
+#output p {
+  margin: 5px 0;
+}
+#userForm {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid #ccc;
+  padding-top: 20px;
+  gap: 15;
+}
+#userForm input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
+  font-size: 16px;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+#userForm input[type="submit"] {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+#userForm input[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+#userForm input[type="button"] {
+  padding: 10px 20px;
+  /* border: none; */
+  border-radius: 5px;
+  /* background-color: #007bff; */
+  color: #007bff;
+  border: 1px solid #020202;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+#userForm input[type="button"]:hover {
+  border-color: #0056b3;
+  background-color: #007bff;
+  color: #fff;
+}
+
+/* Additional Styles for Colorful UI */
+#userForm input[type="text"]:focus,
+#userForm input[type="submit"]:focus {
+  outline: none;
+  border-color: #007bff;
+}
+#userForm input[type="text"]::placeholder {
+  color: #999;
+}
+#output p strong {
+  color: #007bff;
+}
+/* Chat Bubble Styles */
+.chat-bubble {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 80%;
+}
+.user-bubble {
+  background-color: #007bff;
+  color: #fff;
+  clear: both; /* Ensure each user message appears on a new line */
+}
+.bot-bubble {
+  background-color: #fff;
+  color: #333;
+  clear: both; /* Ensure each bot message appears on a new line */
+}
+/* Toggle Switch Styles */
+.toggle-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+.toggle-label {
+  margin-right: 10px;
+  color: #333;
+}
+.toggle {
+  appearance: none;
+  width: 40px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 20px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.toggle-handle {
+  width: 18px;
+  height: 18px;
+  background-color: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: transform 0.3s ease;
+}
+.toggle-input:checked + .toggle-handle {
+  transform: translateX(20px) translateY(-50%);
+}
+.toggle-input {
+  display: none;
+}
+/* Dark Mode Styles */
+body.dark-mode {
+  background-color: #1a1a1a;
+  color: #fff;
+}
+
+body.dark-mode #chat-container {
+  background-color: #222;
+  color: #fff;
+}
+
+body.dark-mode #output {
+  background-color: #333;
+}
+
+body.dark-mode #userForm input[type="text"],
+body.dark-mode #userForm input[type="text"]::placeholder {
+  background-color: #333;
+  color: #fff;
+  border-color: #444;
+}
+
+body.dark-mode #userForm input[type="submit"] {
+  background-color: #4d4d4d;
+}
+
+body.dark-mode #userForm input[type="submit"]:hover {
+  background-color: #666;
+}
+
+body.dark-mode #output p strong {
+  color: #4cb4f7;
+}
+
+body.dark-mode .user-bubble {
+  background-color: #4cb4f7;
+  color: #fff;
+}
+
+body.dark-mode .bot-bubble {
+  background-color: #666;
+  color: #fff;
+}
+
+/* Lighter Title Color in Dark Mode */
+body.dark-mode h1 {
+  color: #f0f0f0; /* Light gray */
+}

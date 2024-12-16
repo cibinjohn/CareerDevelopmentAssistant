@@ -1,0 +1,8 @@
+pandas
+Flask==2.3.2
+Flask-RESTful==0.3.10
+pymongo==4.6.3
+flask_cors==4.0.0
+gunicorn
+pika
+unicorn
