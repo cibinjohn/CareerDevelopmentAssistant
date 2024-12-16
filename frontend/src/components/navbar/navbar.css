@@ -1,0 +1,51 @@
+/* .navbar{
+    width: 100% !important;
+    overflow: hidden;
+    position: fixed;
+    z-index: 99;
+} */
+/* .dropdown-menu {
+    position: static;
+}
+
+
+.dropdown-menu {
+    position: absolute;
+    background-color: #d9d9d9;
+    width: 200px;
+    left: 0;
+    display: none;
+    z-index: 99999;
+  } */
+
+
+ .float-right{
+    float:right;
+ } 
+
+ 
+.logout-button{
+    background: black;
+    color: white;
+    border: 3px solid black;
+    transition: background 1s linear 0ms;
+    transition: color 500ms linear 0ms;
+
+    width: 500px;
+    padding: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    border-radius: 30px;
+    font-weight: 600;
+    margin-top: 10px;
+
+    font-size: 20px;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  
+  .logout-button:hover{
+    color: #333;
+    background-color: white;
+  }

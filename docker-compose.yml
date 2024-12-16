@@ -1,0 +1,64 @@
+version: "3.7"
+services:
+
+  flask_app:
+    image: 'careerdevelopmentchatbot:release_v4'
+    ports:
+      - "6999:6999"
+    depends_on:
+      - rabbit
+
+  rabbit:
+    hostname: rabbit
+    image: "rabbitmq:3-management"
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=mypass
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+
+  mongodb:
+    image: "mongodb/mongodb-community-server:latest"
+    ports:
+      - "27017:27017"
+
+    depends_on:
+      - rag_api
+      - usercred_api
+
+  augmentgen_worker:
+    image: 'careerdevelopmentchatbot_augmentationmodel_worker:release_v4'
+#    user: nobody
+    depends_on:
+      - rabbit
+      - flask_app
+
+  rag_api:
+    image: 'careerdevelopmentchatbot_rag:release_v4'
+    ports:
+      - "6997:6997"
+    depends_on:
+      - augmentgen_worker
+
+  addressmodel_api:
+    image: 'careerdevelopmentchatbot_addressing_api:release_v4'
+    ports:
+      - "6998:6998"
+    depends_on:
+      - augmentgen_worker
+
+  usercred_api:
+    image: 'careerdevelopmentchatbot_usercredapi:release_v4'
+    ports:
+      - "6996:6996"
+    depends_on:
+      - augmentgen_worker
+
+  frontend:
+    image: 'careerdevelopmentchatbot_ui:release_v4'
+    ports:
+      - "3000:3000"
+    depends_on:
+      - flask_app
+
