@@ -40,23 +40,23 @@ function App() {
 
       const chunk = decoder.decode(value, { stream: true });
 
-      // 🔥 Clean SSE format (important)
       const lines = chunk.split("\n");
-      let textChunk = "";
 
       lines.forEach((line) => {
         if (line.startsWith("data: ")) {
-          textChunk += line.replace("data: ", "");
+          const text = line.slice(6); // cleanly removes "data: "
+          if (text) {
+            setMessages((prev) => {
+              const updated = [...prev];
+              updated[updated.length - 1] = {
+                ...updated[updated.length - 1],
+                text: updated[updated.length - 1].text + text,
+              };
+              return updated;
+            });
+          }
         }
       });
-
-      if (textChunk) {
-        setMessages((prev) => {
-          const updated = [...prev];
-          updated[updated.length - 1].text += textChunk;
-          return updated;
-        });
-      }
     }
 
     setInput("");

@@ -22,4 +22,4 @@ class ClaudeLangchain:
 
         return response
 
-    
+
