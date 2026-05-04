@@ -7,3 +7,5 @@ langchain-community
 langchain-anthropic
 sse-starlette
 python-dotenv
+ddgs
+wikipedia
