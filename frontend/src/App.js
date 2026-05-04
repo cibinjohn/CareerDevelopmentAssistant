@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import ReactMarkdown from "react-markdown";
 import "./App.css";
 
 function App() {
@@ -74,7 +73,7 @@ function App() {
               key={index}
               className={`message ${msg.sender === "user" ? "user" : "bot"}`}
             >
-              <ReactMarkdown>{msg.text}</ReactMarkdown>
+              {msg.text}
             </div>
           ))}
           <div ref={chatEndRef} />
