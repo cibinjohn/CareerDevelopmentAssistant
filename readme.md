@@ -6,7 +6,7 @@
 To run the backend,
 
 
-`uvicorn app:app`
+`uvicorn backend.app:app --reload`
 
 For frontend,
 

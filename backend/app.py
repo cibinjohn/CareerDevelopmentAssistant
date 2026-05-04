@@ -2,6 +2,11 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
+from backend.LLM import ClaudeBase
+
+# LLM
+claude = ClaudeBase()
+
 app = FastAPI()
 
 # Allow frontend to connect
@@ -24,7 +29,9 @@ def home():
 def chat(message: Message):
     user_input = message.text
 
+    llm_output = claude.get_basic_response(user_input)
+
     # For now: just echo
     return {
-        "response": f"You said: {user_input}"
+        "response": f"{llm_output}"
     }
