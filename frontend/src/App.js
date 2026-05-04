@@ -1,46 +1,59 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-// import HomeLayout from './components/HomeLayout';
-// import Login from './components/Login';
-// import Register from './components/Register';
-// import Dashboard from './components/Dashboard';
-// import Logout from './components/Logout';
-import { Dashboard, HomeLayout, Landing, Login, Logout, Register, Contact, Premium } from "./pages";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState } from "react";
+import "./App.css";
 
 function App() {
-  return (
-    <>
-    <ToastContainer
-      position="top-right"
-      autoClose={5000}
-      hideProgressBar={false}
-      newestOnTop={false}
-      closeOnClick
-      rtl={false}
-      pauseOnFocusLoss
-      draggable
-      pauseOnHover
-      theme="light"
-      // transition: Bounce,
-      />
-      {/* Same as */}
-      <ToastContainer />
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState([]);
 
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomeLayout />}>
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-          <Route index  element={<Dashboard />} />
-          <Route path="logout" element={<Logout />} />
-          <Route path="contact" element={<Contact />} />
-          <Route path="premium" element={<Premium />} />
-          <Route path="*" element={<Navigate replace to="/" />} />
-        </Route>
-      </Routes>
-    </Router>
-    </>
+  const sendMessage = async () => {
+    if (!input.trim()) return;
+
+    const userMessage = { sender: "user", text: input };
+    setMessages((prev) => [...prev, userMessage]);
+
+    const response = await fetch("http://127.0.0.1:8000/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ text: input }),
+    });
+
+    const data = await response.json();
+
+    const botMessage = { sender: "bot", text: data.response };
+    setMessages((prev) => [...prev, botMessage]);
+
+    setInput("");
+  };
+
+  return (
+    <div className="app">
+      <div className="chat-container">
+        <h2 className="title">Career Assistant</h2>
+
+        <div className="chat-box">
+          {messages.map((msg, index) => (
+            <div
+              key={index}
+              className={`message ${msg.sender === "user" ? "user" : "bot"}`}
+            >
+              {msg.text}
+            </div>
+          ))}
+        </div>
+
+        <div className="input-box">
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Ask about your IT career..."
+            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+          />
+          <button onClick={sendMessage}>Send</button>
+        </div>
+      </div>
+    </div>
   );
 }
 
