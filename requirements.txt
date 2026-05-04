@@ -2,3 +2,8 @@ fastapi
 uvicorn
 openai
 anthropic
+langchain
+langchain-community
+langchain-anthropic
+sse-starlette
+python-dotenv

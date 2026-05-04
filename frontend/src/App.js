@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./App.css";
 
 function App() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
+  const chatEndRef = useRef(null);
+
+  // Auto-scroll
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -11,7 +17,11 @@ function App() {
     const userMessage = { sender: "user", text: input };
     setMessages((prev) => [...prev, userMessage]);
 
-    const response = await fetch("http://127.0.0.1:8000/chat", {
+    // Add empty bot message (we will stream into this)
+    const botMessage = { sender: "bot", text: "" };
+    setMessages((prev) => [...prev, botMessage]);
+
+    const response = await fetch("http://127.0.0.1:8000/chat-stream", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -19,10 +29,35 @@ function App() {
       body: JSON.stringify({ text: input }),
     });
 
-    const data = await response.json();
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder("utf-8");
 
-    const botMessage = { sender: "bot", text: data.response };
-    setMessages((prev) => [...prev, botMessage]);
+    let done = false;
+
+    while (!done) {
+      const { value, done: doneReading } = await reader.read();
+      done = doneReading;
+
+      const chunk = decoder.decode(value, { stream: true });
+
+      // 🔥 Clean SSE format (important)
+      const lines = chunk.split("\n");
+      let textChunk = "";
+
+      lines.forEach((line) => {
+        if (line.startsWith("data: ")) {
+          textChunk += line.replace("data: ", "");
+        }
+      });
+
+      if (textChunk) {
+        setMessages((prev) => {
+          const updated = [...prev];
+          updated[updated.length - 1].text += textChunk;
+          return updated;
+        });
+      }
+    }
 
     setInput("");
   };
@@ -41,6 +76,7 @@ function App() {
               {msg.text}
             </div>
           ))}
+          <div ref={chatEndRef} />
         </div>
 
         <div className="input-box">
