@@ -16,46 +16,46 @@ function App() {
 
     const userMessage = { sender: "user", text: input };
     setMessages((prev) => [...prev, userMessage]);
+    setMessages((prev) => [...prev, { sender: "bot", text: "Thinking..." }]);
 
-    // Add empty bot message (we will stream into this)
-    const botMessage = { sender: "bot", text: "" };
-    setMessages((prev) => [...prev, botMessage]);
+    try {
+      const response = await fetch("http://127.0.0.1:8000/chat-stream", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: input }),
+      });
 
-    const response = await fetch("http://127.0.0.1:8000/chat-stream", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ text: input }),
-    });
+      const data = await response.json();
+      const res = data.response;
 
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder("utf-8");
+      let formatted = "";
 
-    let done = false;
+      if (res && res.type === "structured") {
+        const r = res.data;
+        formatted = [
+          `📌 Topic: ${r.topic}`,
+          `📝 Summary: ${r.summary}`,
+          `🔗 Sources: ${r.sources.length ? r.sources.join(", ") : "None"}`,
+          `🛠 Tools Used: ${r.tools_used.length ? r.tools_used.join(", ") : "None"}`,
+        ].join("\n");
+      } else if (res && res.type === "text") {
+        formatted = res.data;
+      } else {
+        formatted = "No response received.";
+      }
 
-    while (!done) {
-      const { value, done: doneReading } = await reader.read();
-      done = doneReading;
+      setMessages((prev) => {
+        const updated = [...prev];
+        updated[updated.length - 1] = { sender: "bot", text: formatted };
+        return updated;
+      });
 
-      const chunk = decoder.decode(value, { stream: true });
-
-      const lines = chunk.split("\n");
-
-      lines.forEach((line) => {
-        if (line.startsWith("data: ")) {
-          const text = line.slice(6); // cleanly removes "data: "
-          if (text) {
-            setMessages((prev) => {
-              const updated = [...prev];
-              updated[updated.length - 1] = {
-                ...updated[updated.length - 1],
-                text: updated[updated.length - 1].text + text,
-              };
-              return updated;
-            });
-          }
-        }
+    } catch (err) {
+      console.error("Fetch error:", err);
+      setMessages((prev) => {
+        const updated = [...prev];
+        updated[updated.length - 1] = { sender: "bot", text: "Error: could not get response." };
+        return updated;
       });
     }
 
@@ -73,7 +73,9 @@ function App() {
               key={index}
               className={`message ${msg.sender === "user" ? "user" : "bot"}`}
             >
-              {msg.text}
+              {msg.text.split("\n").map((line, i) => (
+                <div key={i}>{line}</div>
+              ))}
             </div>
           ))}
           <div ref={chatEndRef} />

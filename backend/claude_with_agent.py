@@ -62,9 +62,11 @@ class ClaudeLangchainAgent:
         try:
             structured_response = self.parser.parse(raw_response.get("output")[0]["text"])
             print("structured_response :",structured_response)
-            return structured_response
+            return  {"type": "structured", "data": structured_response.model_dump()}
         except Exception as e:
             print("Error parsing response", e, "Raw Response - ", raw_response)
+            raw_text = raw_response.get("output", [{}])[0].get("text", "No response.")
+            return {"type": "text", "data": raw_text}
 
 if __name__ == "__main__":
     agent = ClaudeLangchainAgent()
