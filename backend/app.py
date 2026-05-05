@@ -48,6 +48,7 @@ def chat_stream(message: Message):
     print("response:", response)
     return {"response": response} if response else {"response": None}
 
+
 # @app.post("/chat-stream")
 # async def chat_stream(message: Message):
 #
