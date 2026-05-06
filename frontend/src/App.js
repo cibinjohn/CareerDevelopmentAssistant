@@ -11,22 +11,22 @@ function StructuredMessage({ data }) {
         className="details-toggle"
         onClick={() => setExpanded((prev) => !prev)}
       >
-        {expanded ? "▲ Hide Details" : "▼ Show Details"}
+        {expanded ? "Hide details" : "Show details"}
       </button>
       {expanded && (
         <div className="details-panel">
           <div className="detail-row">
-            <span className="detail-label">📌 Topic</span>
+            <span className="detail-label">Topic</span>
             <span className="detail-value">{data.topic}</span>
           </div>
           <div className="detail-row">
-            <span className="detail-label">🔗 Sources</span>
+            <span className="detail-label">Sources</span>
             <span className="detail-value">
               {data.sources.length ? data.sources.join(", ") : "None"}
             </span>
           </div>
           <div className="detail-row">
-            <span className="detail-label">🛠 Tools Used</span>
+            <span className="detail-label">Tools used</span>
             <span className="detail-value">
               {data.tools_used.length ? data.tools_used.join(", ") : "None"}
             </span>
@@ -40,25 +40,24 @@ function StructuredMessage({ data }) {
 function MessageBubble({ msg }) {
   if (msg.sender === "user") {
     return (
-      <div className="message user">
-        <span>{msg.text}</span>
-      </div>
-    );
-  }
-
-  if (msg.type === "structured") {
-    return (
-      <div className="message bot">
-        <StructuredMessage data={msg.data} />
+      <div className="message-row user-row">
+        <div className="bubble user-bubble">{msg.text}</div>
       </div>
     );
   }
 
   return (
-    <div className="message bot">
-      {msg.text.split("\n").map((line, i) => (
-        <div key={i}>{line}</div>
-      ))}
+    <div className="message-row bot-row">
+      <div className="bot-avatar">CA</div>
+      <div className="bubble bot-bubble">
+        {msg.type === "structured" ? (
+          <StructuredMessage data={msg.data} />
+        ) : (
+          msg.text.split("\n").map((line, i) => (
+            <span key={i}>{line}{i < msg.text.split("\n").length - 1 && <br />}</span>
+          ))
+        )}
+      </div>
     </div>
   );
 }
@@ -66,6 +65,7 @@ function MessageBubble({ msg }) {
 function App() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
   const chatEndRef = useRef(null);
 
   useEffect(() => {
@@ -75,11 +75,12 @@ function App() {
   const clearChat = () => setMessages([]);
 
   const sendMessage = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() || loading) return;
 
     const userMessage = { sender: "user", text: input };
     setMessages((prev) => [...prev, userMessage]);
-    setMessages((prev) => [...prev, { sender: "bot", text: "Thinking..." }]);
+    setMessages((prev) => [...prev, { sender: "bot", type: "text", text: "Thinking..." }]);
+    setLoading(true);
 
     const currentInput = input;
     setInput("");
@@ -95,7 +96,6 @@ function App() {
       const res = data.response;
 
       let botMessage;
-
       if (res && res.type === "structured") {
         botMessage = { sender: "bot", type: "structured", data: res.data };
       } else if (res && res.type === "text") {
@@ -121,6 +121,8 @@ function App() {
         };
         return updated;
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -129,27 +131,53 @@ function App() {
       <div className="chat-container">
 
         <div className="chat-header">
-          <h2 className="title">Career Assistant</h2>
+          <div className="header-left">
+            <div className="header-avatar">CA</div>
+            <div className="header-info">
+              <span className="header-name">Career Assistant</span>
+              <span className="header-status">
+                <span className="status-dot"></span>online
+              </span>
+            </div>
+          </div>
           <button className="clear-btn" onClick={clearChat} title="Clear chat">
-            🗑 Clear
+            Clear
           </button>
         </div>
 
         <div className="chat-box">
+          {messages.length === 0 && (
+            <div className="empty-state">
+              <div className="empty-avatar">CA</div>
+              <p className="empty-title">Career Assistant</p>
+              <p className="empty-subtitle">Ask me anything about your IT career, research topics, or calculations.</p>
+            </div>
+          )}
           {messages.map((msg, index) => (
             <MessageBubble key={index} msg={msg} />
           ))}
           <div ref={chatEndRef} />
         </div>
 
-        <div className="input-box">
+        <div className="input-area">
           <input
+            className="input-field"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about your IT career..."
+            placeholder="Ask something..."
             onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+            disabled={loading}
           />
-          <button onClick={sendMessage}>Send</button>
+          <button
+            className="send-btn"
+            onClick={sendMessage}
+            disabled={loading || !input.trim()}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
         </div>
 
       </div>
