@@ -6,7 +6,7 @@ from langchain_core.output_parsers import PydanticOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel
 
-from backend.tools import add_tool
+from backend.tools import add_tool, career_info_tool
 from config.constants import ANTHROPIC_BASE_MODEL
 
 load_dotenv()
@@ -16,12 +16,13 @@ class ResearchResponse(BaseModel):
     summary: str
     sources: list[str]
     tools_used: list[str]
+    chunks: list[str]
 
 
 
 class ClaudeLangchainAgent:
     def __init__(self):
-        self.tools = [add_tool]
+        self.tools = [add_tool, career_info_tool]
 
         self.llm = ChatAnthropic(
             model=ANTHROPIC_BASE_MODEL,  # fast & cheap (good for dev)
@@ -38,9 +39,15 @@ class ClaudeLangchainAgent:
                 (
                     "system",
                     """
-                    You are a research assistant that will help generate a research paper.
+                    You are a career assistant that will help answer user queries.
                     Answer the user query and use neccessary tools. 
+                        
                     IMPORTANT: Always use the tool result as the answer if you use 'add' tool
+                    IMPORTANT: When the queries are related to IT/software related professions, always use the results from career_info_tool as reference.  If nothing is returned, Say that you do not have information regarding to the query
+                    IMPORTANT: When you use career_info_tool, copy the raw returned text chunks directly 
+    into the 'chunks' field of your response as a list of strings. 
+    If career_info_tool was not used, set chunks to an empty list []
+    
                     Wrap the output in this format and provide no other text\n{format_instructions}
                     """,
                 ),

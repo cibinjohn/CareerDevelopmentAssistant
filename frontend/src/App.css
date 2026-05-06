@@ -245,7 +245,7 @@ body {
   font-weight: 400;
 }
 
-/* Structured message inside bot bubble */
+/* Structured message */
 .structured-message {
   display: flex;
   flex-direction: column;
@@ -308,6 +308,50 @@ body {
 .detail-value {
   color: #374151;
   font-size: 12px;
+}
+
+/* Retrieved chunks */
+.chunks-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 8px;
+}
+
+.chunks-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 2px;
+}
+
+.chunk-item {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+.chunk-number {
+  font-size: 10px;
+  font-weight: 600;
+  color: #2563eb;
+  min-width: 20px;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+
+.chunk-text {
+  font-size: 11px;
+  color: #4b5563;
+  line-height: 1.5;
 }
 
 /* Input area */

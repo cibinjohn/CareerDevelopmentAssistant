@@ -44,6 +44,7 @@ def chat(message: Message):
 
 @app.post("/chat-stream")
 def chat_stream(message: Message):
+    print("message.text : ",message.text)
     response = agent_lc_claude.get_basic_streaming_response(message.text)
     print("response:", response)
     return {"response": response} if response else {"response": None}

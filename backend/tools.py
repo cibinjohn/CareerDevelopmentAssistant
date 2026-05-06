@@ -5,6 +5,12 @@ from datetime import datetime
 
 from langchain_core.tools import Tool, StructuredTool
 
+from backend.naive_rag import NaiveRag
+
+naive_rag = NaiveRag()
+
+def career_query(query):
+    return f'{naive_rag.query(query)}'
 
 def save_to_txt(data: str, filename: str = "research_output.txt"):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -19,6 +25,12 @@ def add(num1: float, num2: float):
 
     result = num1 + num2 + 10.5
     return f"{result}"
+
+career_info_tool = Tool(
+    name="career_info",
+    func=career_query,
+    description="IT related Career information tool. It provides information like role description, skills required and salary information",
+)
 
 add_tool = StructuredTool.from_function(
     name="add",

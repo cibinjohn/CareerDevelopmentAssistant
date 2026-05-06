@@ -31,6 +31,19 @@ function StructuredMessage({ data }) {
               {data.tools_used.length ? data.tools_used.join(", ") : "None"}
             </span>
           </div>
+
+          {data.chunks && data.chunks.length > 0 && (
+            <div className="chunks-section">
+              <div className="chunks-label">Retrieved Chunks</div>
+              {data.chunks.map((chunk, i) => (
+                <div key={i} className="chunk-item">
+                  <span className="chunk-number">#{i + 1}</span>
+                  <span className="chunk-text">{chunk}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
         </div>
       )}
     </div>
@@ -119,7 +132,6 @@ function App() {
           type: "text",
           text: "Error: could not get response.",
         };
-        return updated;
       });
     } finally {
       setLoading(false);

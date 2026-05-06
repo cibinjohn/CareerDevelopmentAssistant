@@ -9,3 +9,9 @@ sse-starlette
 python-dotenv
 ddgs
 wikipedia
+chromadb
+langchain-chroma
+pypdf
+sentence_transformers
+ipywidgets
+pandas
